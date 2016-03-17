@@ -1,0 +1,11 @@
+#!/bin/bash
+export ARCH=arm64
+export PATH=/storage/toolchains/aarch64-linux-android-4.9-kernel/bin/:$PATH
+export CROSS_COMPILE=aarch64-linux-android-
+if [ -f .config.def ]
+then
+rm .config.def
+fi
+make clean && make mrproper
+echo -en "\e[H\e[J\e[3J"
+echo Ready !

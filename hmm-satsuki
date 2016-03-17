@@ -1,0 +1,22 @@
+#!/bin/bash
+./clean
+rm -fr build_satsuki
+mkdir -pv build_satsuki/out/modules
+export ARCH=arm64
+export PATH=/storage/toolchains/aarch64-linux-android-4.9-kernel/bin/:$PATH
+export CROSS_COMPILE=aarch64-linux-android-
+export STRIP=aarch64-linux-android-strip
+make phatsuki_sxz5p_nh_defconfig
+make menuconfig
+make
+tools/dtbTool --force-v2 -o build_satsuki/out/boot.img-dtb -s 2048 -p ./scripts/dtc/ ./arch/arm/boot/dts/qcom/
+cp arch/arm64/boot/Image build_satsuki/out/boot.img-zImage
+cp arch/arm64/boot/Image.gz-dtb build_satsuki/out/boot.img-zImage_gz
+make modules
+find -type f -name *.ko -exec cp {} build_satsuki/out/modules/ \;
+ls -al build_satsuki/out/modules/
+cd build_satsuki/out/modules/
+$STRIP --strip-unneeded *.ko
+cd ../../../
+ls -al build_satsuki/*
+echo Done !

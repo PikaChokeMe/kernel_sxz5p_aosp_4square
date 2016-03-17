@@ -1,0 +1,22 @@
+#!/bin/bash
+./clean
+rm -fr build_ivy
+mkdir -pv build_ivy/out/modules
+export ARCH=arm64
+export PATH=/storage/toolchains/aarch64-linux-android-4.9-kernel/bin/:$PATH
+export CROSS_COMPILE=aarch64-linux-android-
+export STRIP=aarch64-linux-android-strip
+make poison_ivy_yeah_xD_defconfig
+make menuconfig
+make
+tools/dtbTool --force-v2 -o build_ivy/out/boot.img-dtb -s 2048 -p ./scripts/dtc/ ./arch/arm/boot/dts/qcom/
+cp arch/arm64/boot/Image build_ivy/out/boot.img-zImage
+cp arch/arm64/boot/Image.gz-dtb build_ivy/out/boot.img-zImage_gz
+make modules
+find -type f -name *.ko -exec cp {} build_ivy/out/modules/ \;
+ls -al build_ivy/out/modules/
+cd build_ivy/out/modules/
+$STRIP --strip-unneeded *.ko
+cd ../../../
+ls -al build_ivy/*
+echo Done !
