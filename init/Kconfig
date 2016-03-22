@@ -1619,6 +1619,12 @@ config MMAP_ALLOW_UNINITIALIZED
 
 	  See Documentation/nommu-mmap.txt for more information.
 
+config DEFERRED_INITCALLS
+	bool "Deferred initcalls support"
+	default y
+	help
+	  Say 'y' here to include support for deferred initcalls
+
 config PROFILING
 	bool "Profiling support"
 	help
